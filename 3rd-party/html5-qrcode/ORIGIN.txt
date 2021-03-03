@@ -1,0 +1,7 @@
+Html5-QRCode
+
+GitHub - 
+https://github.com/mebjas/html5-qrcode
+
+Minified library downloaded from -
+https://raw.githubusercontent.com/mebjas/html5-qrcode/158c967e1559aa4723c43d2701c5cc8b3ee9e7d1/minified/html5-qrcode.min.js
