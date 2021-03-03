@@ -163,6 +163,7 @@ async function onVerifySignature() {
 
 function onStartScanClick() {
   document.getElementById("reader").style.display = "block";
+  document.getElementById("cameraStartError").innerText = "";
 
   html5QrCode = new Html5Qrcode("reader", /* verbose= */ false);
   const config = { fps: 10, qrbox: 250 };
@@ -193,5 +194,5 @@ function onScanError(errorMessage) {
 }
 
 function onScanStartError(errorMessage) {
-  console.log(`Error starting camera ('${errorMessage}').`);
+  document.getElementById("cameraStartError").innerText = `Error starting camera ('${errorMessage}').`;
 }
