@@ -161,9 +161,13 @@ async function onVerifySignature() {
   }
 }
 
+function displayCameraError(errorStr) {
+  document.getElementById("cameraError").innerText = errorStr;
+}
+
 function onStartScanClick() {
   document.getElementById("reader").style.display = "block";
-  document.getElementById("cameraStartError").innerText = "";
+  displayCameraError("");
 
   html5QrCode = new Html5Qrcode("reader", /* verbose= */ false);
   const config = { fps: 10, qrbox: 250 };
@@ -194,5 +198,5 @@ function onScanError(errorMessage) {
 }
 
 function onScanStartError(errorMessage) {
-  document.getElementById("cameraStartError").innerText = `Error starting camera ('${errorMessage}').`;
+  displayCameraError(`Error starting camera ('${errorMessage}').`);
 }
