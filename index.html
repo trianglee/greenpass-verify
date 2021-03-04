@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
                 
         <script src="greenpass-verify.js"></script>
-        <script src="3rd-party/html5-qrcode/html5-qrcode.min.js"></script>
+        <script src="3rd-party/zxing-library/index.min.js"></script>
 
         <title>Green Pass Verify</title>
 
@@ -13,9 +13,11 @@
                 font-family: Arial, sans-serif;
             }
 
-            #reader {
+            #video {
                 width: 400px;
                 margin: auto;
+                display: block;
+                border: 1px solid gray;
             }
 
             .validSignature {
@@ -40,7 +42,7 @@
             this page without reading the code first!</span>
         </p>
         <hr>
-        <div id="reader"></div>
+        <video id="video"></video>
         <div id="cameraError"></div>
         <button type="button" onclick="onStartScanClick()">Start Scanning</button>
         <button type="button" onclick="onStopScanClick()">Stop Scanning</button>
@@ -79,8 +81,8 @@
             in <a href="https://github.com/MohGovIL/Ramzor">https://github.com/MohGovIL/Ramzor</a>,
             and on the reverse-engeering work done by Yuval Adam in
             <a href="https://github.com/yuvadm/greenpass">https://github.com/yuvadm/greenpass</a>.<br/>
-            QR Code scanning by <a href="https://github.com/mebjas/html5-qrcode">
-            https://github.com/mebjas/html5-qrcode</a>.
+            QR Code scanning by <a href="https://github.com/zxing-js/library">
+            https://github.com/zxing-js/library</a>.
         </p>
     </body>
 </html>

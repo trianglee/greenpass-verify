@@ -16,7 +16,7 @@ Based on the details and verification code provided by Ministry of Health in
 https://github.com/MohGovIL/Ramzor, and on the reverse-engeering work done by 
 Yuval Adam in https://github.com/yuvadm/greenpass.
 
-QR Code scanning by https://github.com/mebjas/html5-qrcode.
+QR Code scanning by https://github.com/zxing-js/library.
 
 # Public Key
 

@@ -61,7 +61,7 @@ function importRsaPublicKeyPem(pemText, hashAlgorithm) {
 
 /*** Main ***/
 
-var html5QrCode = null;
+var qrCodeReader = null;
 
 function onLoad() {
 
@@ -79,7 +79,8 @@ function onLoad() {
   document.getElementById("pemPublicKey").value = RAMZOR_QR_PUBLIC_KEY_PEM;
   onVerifySignature();
 
-  html5QrCode = new Html5Qrcode("reader", /* verbose= */ false);
+  qrCodeReader = new ZXing.BrowserQRCodeReader();
+  qrCodeReader.timeBetweenDecodingAttempts = 100;
 }
 
 // Verify the QR code signature using the public key.
@@ -169,11 +170,11 @@ function displayCameraError(errorStr) {
 }
 
 function onStartScanClick() {
-  document.getElementById("reader").style.display = "block";
+
   displayCameraError("");
 
-  // By default, just use whatever camera is defined as "environment".
-  let cameraId = { facingMode: "environment" };
+  // By default, use default camera ("environment" camera, if available).
+  let cameraId = null;
 
   let cameraSelect = document.getElementById("cameraSelect");
   if (cameraSelect.length > 0) {
@@ -184,22 +185,21 @@ function onStartScanClick() {
     }
   }
 
-  const config = { fps: 10, qrbox: 250 };
-  html5QrCode.start(
-    cameraId, 
-    config, 
-    onScanSuccess, 
-    onScanError)
-  .catch(onScanStartError);
+  qrCodeReader.decodeFromInputVideoDeviceContinuously(cameraId, 'video', onDecode).catch(onStartScanError);
 }
 
 function onStopScanClick() {
-  html5QrCode.stop();
-  document.getElementById("reader").style.display = "none";
+  qrCodeReader.reset();
 }
 
 function onSelectCameraButtonClick() {
-  Html5Qrcode.getCameras().then(devices => {
+  qrCodeReader.listVideoInputDevices().then(devices => {
+    
+    if (devices.length === 0) {
+      displayCameraError("No cameras found!");
+      return;
+    }
+
     let cameraSelect = document.getElementById("cameraSelect");
 
     // Clear options list.
@@ -216,26 +216,34 @@ function onSelectCameraButtonClick() {
     // Add all other listed cameras.
     for (const device of devices) {
       var option = document.createElement("option");
-      option.value = device.id;
+      option.value = device.deviceId;
       option.text = device.label;
       cameraSelect.add (option);
     }
 
     document.getElementById("cameraSelectionDiv").style.display = "block";
-  }).catch(errorMessage => {
-    displayCameraError(`Error listing camera devices ('${errorMessage}').`);
   });  
 }
 
-function onScanSuccess(qrMessage) {
-  document.getElementById("qrCodeText").value = qrMessage;
-  onVerifySignature();
+function onDecode(result, error) {
+  if (result !== null) {
+    document.getElementById("qrCodeText").value = result;
+    onVerifySignature();
+  }
+
+  if (error !== null) {
+    if (error instanceof ZXing.NotFoundException) {
+      // QR code not found - do nothing.
+    } else if (error instanceof ZXing.ChecksumException) {
+      // QR code found but failed checksum validation - do nothing.
+    } else if (error instanceof ZXing.FormatException) {
+      // QR code found but wasn't properly formatted - do nothing.
+    } else {
+      displayCameraError (`Unexpected decode error (${error})`)
+    }
+  }
 }
 
-function onScanError(errorMessage) {
-  // Do nothing.
-}
-
-function onScanStartError(errorMessage) {
-  displayCameraError(`Error starting camera ('${errorMessage}').`);
+function onStartScanError(error) {
+  displayCameraError("Error starting camera!");
 }
