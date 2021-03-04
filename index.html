@@ -44,6 +44,11 @@
         <div id="cameraError"></div>
         <button type="button" onclick="onStartScanClick()">Start Scanning</button>
         <button type="button" onclick="onStopScanClick()">Stop Scanning</button>
+        <button type="button" onclick="onSelectCameraButtonClick()">Select Camera</button>
+        <div id="cameraSelectionDiv" style="display: none;">
+            <select id="cameraSelect">
+            </select>
+        </div>
         <hr>
         <p>
             QR Code Text:<br/>

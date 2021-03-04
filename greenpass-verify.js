@@ -79,6 +79,8 @@ function onLoad() {
   document.getElementById("pemPublicKey").value = RAMZOR_QR_PUBLIC_KEY_PEM;
 
   onVerifySignature();
+
+  html5QrCode = new Html5Qrcode("reader", /* verbose= */ false);
 }
 
 // Verify the QR code signature using the public key.
@@ -169,11 +171,21 @@ function onStartScanClick() {
   document.getElementById("reader").style.display = "block";
   displayCameraError("");
 
-  html5QrCode = new Html5Qrcode("reader", /* verbose= */ false);
-  const config = { fps: 10, qrbox: 250 };
+  // By default, just use whatever camera is defined as "environment".
+  let cameraId = { facingMode: "environment" };
 
+  let cameraSelect = document.getElementById("cameraSelect");
+  if (cameraSelect.length > 0) {
+    // If user explicitly selected another camera, use it instead.
+    // (-1 indicates "default camera").
+    if (cameraSelect.value != -1) {
+      cameraId = cameraSelect.value;
+    }
+  }
+
+  const config = { fps: 10, qrbox: 250 };
   html5QrCode.start(
-    { facingMode: "environment" }, 
+    cameraId, 
     config, 
     onScanSuccess, 
     onScanError)
@@ -181,12 +193,37 @@ function onStartScanClick() {
 }
 
 function onStopScanClick() {
-  if (html5QrCode !== null)  {
-    html5QrCode.stop();
-    html5QrCode = null;
+  html5QrCode.stop();
+  document.getElementById("reader").style.display = "none";
+}
 
-    document.getElementById("reader").style.display = "none";
-  }
+function onSelectCameraButtonClick() {
+  Html5Qrcode.getCameras().then(devices => {
+    let cameraSelect = document.getElementById("cameraSelect");
+
+    // Clear options list.
+    while (cameraSelect.length > 0) {                
+      cameraSelect.remove(0);
+    }      
+
+    // Add "default camera" option.
+    var option = document.createElement("option");
+    option.value = -1;
+    option.text = "(Default camera)"
+    cameraSelect.add (option);
+
+    // Add all other listed cameras.
+    for (const device of devices) {
+      var option = document.createElement("option");
+      option.value = device.id;
+      option.text = device.label;
+      cameraSelect.add (option);
+    }
+
+    document.getElementById("cameraSelectionDiv").style.display = "block";
+  }).catch(errorMessage => {
+    displayCameraError(`Error listing camera devices ('${errorMessage}').`);
+  });  
 }
 
 function onScanSuccess(qrMessage) {
