@@ -77,7 +77,6 @@ function onLoad() {
     "-----END PUBLIC KEY-----";
 
   document.getElementById("pemPublicKey").value = RAMZOR_QR_PUBLIC_KEY_PEM;
-
   onVerifySignature();
 
   html5QrCode = new Html5Qrcode("reader", /* verbose= */ false);
@@ -145,7 +144,9 @@ async function onVerifySignature() {
   const qrCodeText = document.getElementById("qrCodeText").value;
   const pemPublicKey = document.getElementById("pemPublicKey").value;
 
-  var verifyResult = await verifySignature(qrCodeText, pemPublicKey);
+  var qrCodeTextStripped = qrCodeText.replaceAll("\r", "").replaceAll("\n", "")
+
+  var verifyResult = await verifySignature(qrCodeTextStripped, pemPublicKey);
 
   document.getElementById("verifyResult").value = verifyResult.text;
 
@@ -228,6 +229,7 @@ function onSelectCameraButtonClick() {
 
 function onScanSuccess(qrMessage) {
   document.getElementById("qrCodeText").value = qrMessage;
+  onVerifySignature();
 }
 
 function onScanError(errorMessage) {
