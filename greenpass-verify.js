@@ -63,6 +63,9 @@ function importRsaPublicKeyPem(pemText, hashAlgorithm) {
 
 var qrCodeReader = null;
 
+var scanVerifiedAudio = null;
+var scanFailedAudio = null;
+
 function onLoad() {
 
   const RAMZOR_QR_PUBLIC_KEY_PEM = 
@@ -79,8 +82,13 @@ function onLoad() {
   document.getElementById("pemPublicKey").value = RAMZOR_QR_PUBLIC_KEY_PEM;
   onVerifySignature();
 
-  qrCodeReader = new ZXing.BrowserQRCodeReader();
-  qrCodeReader.timeBetweenDecodingAttempts = 100;
+  const TIME_BETWEEN_SUCCESSFUL_DECODES_MILLIS = 2000;
+  const TIME_BETWEEN_DECODE_ATTEMPTS_MILLIS = 100;
+  qrCodeReader = new ZXing.BrowserQRCodeReader(TIME_BETWEEN_SUCCESSFUL_DECODES_MILLIS);
+  qrCodeReader.timeBetweenDecodingAttempts = TIME_BETWEEN_DECODE_ATTEMPTS_MILLIS;
+
+  scanVerifiedAudio = new Audio("sounds/success.wav");
+  scanFailedAudio = new Audio("sounds/access-denied.wav");
 }
 
 // Verify the QR code signature using the public key.
@@ -157,11 +165,15 @@ async function onVerifySignature() {
     document.getElementById("idNumber").value = verifyResult.signedDataJson.p[0].idl;
     document.getElementById("expiration").value = verifyResult.signedDataJson.p[0].e;
 
+    return true;
+
   } else {
     // Invalid signature.
     document.getElementById("verifyResult").className = "invalidSignature";
     document.getElementById("idNumber").value = "";
     document.getElementById("expiration").value = "";
+
+    return false;
   }
 }
 
@@ -225,10 +237,17 @@ function onSelectCameraButtonClick() {
   });  
 }
 
-function onDecode(result, error) {
+async function onDecode(result, error) {
   if (result !== null) {
+
     document.getElementById("qrCodeText").value = result;
-    onVerifySignature();
+    const verified = await onVerifySignature();
+
+    if (verified) {
+      scanVerifiedAudio.play();
+    } else {
+      scanFailedAudio.play();
+    }
   }
 
   if (error !== null) {
