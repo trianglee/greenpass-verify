@@ -33,7 +33,7 @@
         <h1>Green Pass Verify</h1>
 
         <p>
-            Scan and verify Green Pass QR code, using the Israel Ministry of Health RSA public key.
+            Scan and verify Green Pass QR code, using the Israel Ministry of Health RSA or ECDSA public key.
         </p>
         <p>
             No data is sent anywhere, signature verification is done entirely off-line 
@@ -58,8 +58,12 @@
             placeholder="Scanned QR code goes here"></textarea><br/>
         </p>
         <p>
-            PEM Public Key:<br/>
-            <textarea id="pemPublicKey" rows="10" cols="80" oninput="onVerifySignature()"></textarea><br/>
+            PEM RSA Public Key:<br/>
+            <textarea id="pemRsaPublicKey" rows="10" cols="80" oninput="onVerifySignature()"></textarea><br/>
+        </p>
+        <p>
+            PEM ECDSA Public Key:<br/>
+            <textarea id="pemEcPublicKey" rows="5" cols="80" oninput="onVerifySignature()"></textarea><br/>
         </p>
         <p>
             Signature Verification:<br/>

@@ -1,6 +1,6 @@
 # Overview
 
-Scan and verify Green Pass QR code, using the Israel Ministry of Health RSA public key.
+Scan and verify Green Pass QR code, using the Israel Ministry of Health RSA or ECDSA public key.
 
 No data is sent anywhere, signature verification is done entirely off-line 
 in the browser.  
