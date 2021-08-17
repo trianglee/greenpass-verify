@@ -324,15 +324,32 @@ async function onVerifySignature() {
   if (verifyResult.signedDataJson != null) {
     // Signature is valid.
     document.getElementById("verifyResult").className = "validSignature";
-    document.getElementById("idNumber").value = verifyResult.signedDataJson.p[0].idl;
-    document.getElementById("expiration").value = verifyResult.signedDataJson.p[0].e;
+    document.getElementById("certType").value = verifyResult.signedDataJson.ct;
+
+    switch (verifyResult.signedDataJson.ct) {
+      case 1:  // Vaccination certificate - without name
+        document.getElementById("idNumber").value = verifyResult.signedDataJson.p[0].idl;
+        document.getElementById("name").value = "(unknown)";
+        document.getElementById("expiration").value = verifyResult.signedDataJson.p[0].e;
+        break;
+      case 2:   // Vaccination certificate - with name
+      case 3:   // Recovery certificate
+      case 6:   // Medical certificate
+      default:  // Hope this type is valid for all other unfamiliar certificate types.
+        document.getElementById("idNumber").value = verifyResult.signedDataJson.idl;
+        document.getElementById("name").value = verifyResult.signedDataJson.gl + " " + verifyResult.signedDataJson.fl;
+        document.getElementById("expiration").value = verifyResult.signedDataJson.e;
+        break;
+    }
 
     return true;
 
   } else {
     // Invalid signature.
     document.getElementById("verifyResult").className = "invalidSignature";
+    document.getElementById("certType").value = "";
     document.getElementById("idNumber").value = "";
+    document.getElementById("name").value = "";
     document.getElementById("expiration").value = "";
 
     return false;
