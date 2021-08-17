@@ -249,7 +249,9 @@ async function verifySignature(qrCodeText, pemRsaPublicKey, pemEcPublicKey) {
     const signatureBinStr = window.atob(signatureBase64);
     var signature = binaryStrToArrayBuf(signatureBinStr);
 
-    var signedData = binaryStrToArrayBuf(signedDataText);
+    // Data is signed as UTF-8, encode it as UTF-8 before verification.
+    const encoder = new TextEncoder();
+    var signedData = encoder.encode(signedDataText);
 
     var signatureType;
     if (signedDataJson.et === 1) {
