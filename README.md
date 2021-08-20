@@ -30,3 +30,7 @@ A PEM public key can be extracted from a DER certificate using -
 ```
 openssl x509 -pubkey -in XXX.der -inform der -outform pem -noout
 ```
+
+# License
+
+[Apache License 2.0](LICENSE).
