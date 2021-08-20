@@ -1,5 +1,0 @@
-RamzorQRPubKey.der from https://github.com/MohGovIL/Ramzor/tree/main/Verification/RSA
-RamzorQRPubKeyEC.der from https://github.com/MohGovIL/Ramzor/tree/main/Verification/ECDSA
-
-Converted from DER to PEM using -
-openssl x509 -pubkey -in XXX.der -inform der -outform pem -noout
