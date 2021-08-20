@@ -1,6 +1,6 @@
 # Overview
 
-Scan and verify Green Pass QR code, using the Israel Ministry of Health RSA or ECDSA public key.
+Scan and verify Green Pass QR code, using the Israel Ministry of Health RSA or ECDSA public keys.
 
 No data is sent anywhere, signature verification is done entirely off-line 
 in the browser.  
@@ -18,14 +18,15 @@ Yuval Adam in https://github.com/yuvadm/greenpass.
 
 QR Code scanning by https://github.com/zxing-js/library.
 
-# Public Key
+# Public Keys
 
-Hard-coded Ministry of Health public key is from
-https://github.com/yuvadm/greenpass/blob/main/certs/RamzorQRPubKey.pem.
+Hard-coded Ministry of Health public keys (see **RAMZOR_PUBLIC_KEYS_PEM** in the code) are from -
+* RSA public key - https://github.com/MohGovIL/Ramzor/blob/main/Verification/RSA/RamzorQRPubKey.der.
+* ECDSA public key for most certificates - https://github.com/MohGovIL/Ramzor/blob/main/Verification/ECDSA/RamzorQRPubKeyEC.der.
+* ECDSA public key for "fast" medical certificates - derived from a few signatures using https://github.com/trianglee/greenpass-derive-public-key.
 
-It can be extracted from the official DER certificate in
-https://github.com/MohGovIL/Ramzor/blob/main/Verification/RamzorQRPubKey.der, using -
+A PEM public key can be extracted from a DER certificate using -
 
 ```
-openssl x509 -pubkey -in RamzorQRPubKey.der -inform der -outform pem -noout
+openssl x509 -pubkey -in XXX.der -inform der -outform pem -noout
 ```

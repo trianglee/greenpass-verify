@@ -196,27 +196,36 @@ var qrCodeReader = null;
 var scanVerifiedAudio = null;
 var scanFailedAudio = null;
 
+const RAMZOR_PUBLIC_KEYS_PEM = {
+  // RSA public key.
+  // From https://github.com/MohGovIL/Ramzor/blob/main/Verification/RSA/RamzorQRPubKey.der.
+  "IL MOH": "-----BEGIN PUBLIC KEY-----\n" +
+            "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw4MJrQWgRnYakBsoU/eV\n" +
+            "RxpvDnrGvtidQtfU0o0OGKU+p3H16ufPusBzKLHQPGAoZB33lU8wvfP01xUJTvod\n" +
+            "qoi6KEKXGXC+XreQ1YJDKhIglYfPxJOOcauWf/tmV+w0xph6O3L5/2JrhxEjIbdu\n" +
+            "E8zP8FvZ+KxVFA9LOFQzX7zbbiDUBLCRtIBhwtLCPIiy960O+lVZkMPXg5BrBWjc\n" +
+            "NBrDN62PgOxGXvP3iF0bOlz1+m63q9cFzdKqVfOyl8jZRr3GzYD8SVSXO9EbfYId\n" +
+            "8DEP+HMmqd4StD2X6OMDc9UrBBHx3nGbRpi2D9QuHA/kq/QAjQqnrd+iuzdSwQi+\n" +
+            "mQIDAQAB\n" +
+            "-----END PUBLIC KEY-----",
+
+  // ECDSA public key - used for most certificates.
+  // From https://github.com/MohGovIL/Ramzor/blob/main/Verification/ECDSA/RamzorQRPubKeyEC.der.
+  "IL MOHEC": "-----BEGIN PUBLIC KEY-----\n" +
+              "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVD+aucpFLPK3HNnaZ/T/HeFGW84a\n" +
+              "gCBnW0Je0CzzDjhWNdNgI0R74uMhqVAiAFOH2NPjPXgQmaNSpdwRhlGXTw==\n" +
+              "-----END PUBLIC KEY-----",
+             
+  // ECDSA public key - used for "fast" medical certificates.
+  // Derived from a few signatures using https://github.com/trianglee/greenpass-derive-public-key.
+  "IL MOHEC_FAST": "-----BEGIN PUBLIC KEY-----\n" +
+                   "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEc/E5MuUnnyuhwv5LTFa8clYA/B7y\n" +
+                   "S5tkSWjD4E8o0yxGDT+7095mIVDo65z8yeqVRie5BGDARZYzSfJpRF+TYA==\n" +
+                   "-----END PUBLIC KEY-----",
+}
+
 function onLoad() {
 
-  const RAMZOR_QR_PUBLIC_KEY_RSA_PEM = 
-    "-----BEGIN PUBLIC KEY-----\n" +
-    "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw4MJrQWgRnYakBsoU/eV\n" +
-    "RxpvDnrGvtidQtfU0o0OGKU+p3H16ufPusBzKLHQPGAoZB33lU8wvfP01xUJTvod\n" +
-    "qoi6KEKXGXC+XreQ1YJDKhIglYfPxJOOcauWf/tmV+w0xph6O3L5/2JrhxEjIbdu\n" +
-    "E8zP8FvZ+KxVFA9LOFQzX7zbbiDUBLCRtIBhwtLCPIiy960O+lVZkMPXg5BrBWjc\n" +
-    "NBrDN62PgOxGXvP3iF0bOlz1+m63q9cFzdKqVfOyl8jZRr3GzYD8SVSXO9EbfYId\n" +
-    "8DEP+HMmqd4StD2X6OMDc9UrBBHx3nGbRpi2D9QuHA/kq/QAjQqnrd+iuzdSwQi+\n" +
-    "mQIDAQAB\n" +
-    "-----END PUBLIC KEY-----";
-
-  const RAMZOR_QR_PUBLIC_KEY_EC_PEM = 
-    "-----BEGIN PUBLIC KEY-----\n" +
-    "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVD+aucpFLPK3HNnaZ/T/HeFGW84a\n" +
-    "gCBnW0Je0CzzDjhWNdNgI0R74uMhqVAiAFOH2NPjPXgQmaNSpdwRhlGXTw==\n" +
-    "-----END PUBLIC KEY-----"
-
-  document.getElementById("pemRsaPublicKey").value = RAMZOR_QR_PUBLIC_KEY_RSA_PEM;
-  document.getElementById("pemEcPublicKey").value = RAMZOR_QR_PUBLIC_KEY_EC_PEM;
   onVerifySignature();
 
   const TIME_BETWEEN_SUCCESSFUL_DECODES_MILLIS = 2000;
@@ -228,26 +237,40 @@ function onLoad() {
   scanFailedAudio = new Audio("sounds/access-denied.wav");
 }
 
-// Verify the QR code signature using the public key.
+// Verify the QR code signature.
 // Returns a "result" object.
-async function verifySignature(qrCodeText, pemRsaPublicKey, pemEcPublicKey) {
+async function verifySignature(qrCodeText) {
 
   var result = new Object();
   result.text = null;
   result.signedDataJson = null;
 
-  var signedDataJson = null;
+  if (qrCodeText === "") {
+    return result;
+  }
 
   try {
     const separatorIndex = qrCodeText.indexOf("#");
     const signatureBase64 = qrCodeText.substr(0, separatorIndex);
     const signedDataText = qrCodeText.substr(separatorIndex+1);
 
-    signedDataJson = JSON.parse(signedDataText);
+    var signedDataJson = null;
+    try {
+      signedDataJson = JSON.parse(signedDataText);
+    } catch {
+      result.text = "ERROR PARSING JSON!";
+      return result;
+    }
 
     // Decode signature from Base64.
-    const signatureBinStr = window.atob(signatureBase64);
-    var signature = binaryStrToArrayBuf(signatureBinStr);
+    var signature;
+    try {
+      const signatureBinStr = window.atob(signatureBase64);
+      signature = binaryStrToArrayBuf(signatureBinStr);
+    } catch {
+      result.text = "ERROR DECODING SIGNATURE!"
+      return result;
+    }
 
     // Data is signed as UTF-8, encode it as UTF-8 before verification.
     const encoder = new TextEncoder();
@@ -272,17 +295,24 @@ async function verifySignature(qrCodeText, pemRsaPublicKey, pemEcPublicKey) {
       return result;
     }
 
+    const publicKeyName = signedDataJson["c"];
+    if (!(publicKeyName in RAMZOR_PUBLIC_KEYS_PEM)) {
+      result.text = "UNKNOWN PUBLIC KEY!";
+      return result;
+    }
+    const publicKeyPem = RAMZOR_PUBLIC_KEYS_PEM[publicKeyName];
+
     var signatureAlgorithm;
     var publicKey;
     if (signatureType == "RSA") {
       signatureAlgorithm = "RSASSA-PKCS1-v1_5";
-      publicKey = await importRsaPublicKeyPem(pemRsaPublicKey, "sha-256");
+      publicKey = await importRsaPublicKeyPem(publicKeyPem, "sha-256");
     } else if (signatureType == "ECDSA") {
       signatureAlgorithm = {
         name: "ECDSA",
         hash: "SHA-256",
       };
-      publicKey = await importEcdsaPublicKeyPem(pemEcPublicKey);
+      publicKey = await importEcdsaPublicKeyPem(publicKeyPem);
       // Signature needs to be converted from DER format to IEEE P1363 format, as DER
       // is used by OpenSSL (and by Green Pass), and P1363 is used by WebCrypto.
       signature = signatureDerToP1363(signature)
@@ -312,12 +342,10 @@ async function verifySignature(qrCodeText, pemRsaPublicKey, pemEcPublicKey) {
 async function onVerifySignature() {
 
   const qrCodeText = document.getElementById("qrCodeText").value;
-  const pemRsaPublicKey = document.getElementById("pemRsaPublicKey").value;
-  const pemEcPublicKey = document.getElementById("pemEcPublicKey").value;
 
   var qrCodeTextStripped = qrCodeText.replaceAll("\r", "").replaceAll("\n", "")
 
-  var verifyResult = await verifySignature(qrCodeTextStripped, pemRsaPublicKey, pemEcPublicKey);
+  var verifyResult = await verifySignature(qrCodeTextStripped);
 
   document.getElementById("verifyResult").value = verifyResult.text;
 
@@ -331,6 +359,11 @@ async function onVerifySignature() {
         document.getElementById("idNumber").value = verifyResult.signedDataJson.p[0].idl;
         document.getElementById("name").value = "(unknown)";
         document.getElementById("expiration").value = verifyResult.signedDataJson.p[0].e;
+        break;
+      case 4:   // "Fast" medical certificate
+        document.getElementById("idNumber").value = verifyResult.signedDataJson.idl;
+        document.getElementById("name").value = verifyResult.signedDataJson.g + " " + verifyResult.signedDataJson.f;
+        document.getElementById("expiration").value = verifyResult.signedDataJson.e;
         break;
       case 2:   // Vaccination certificate - with name
       case 3:   // Recovery certificate
