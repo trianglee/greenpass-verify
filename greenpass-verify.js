@@ -226,10 +226,11 @@ const RAMZOR_PUBLIC_KEYS_PEM = {
             "-----END PUBLIC KEY-----",
 
   // ECDSA public key - used for most certificates.
-  // From https://github.com/MohGovIL/Ramzor/blob/main/Verification/ECDSA/RamzorQRPubKeyEC.der.
-  "IL MOHEC": "-----BEGIN PUBLIC KEY-----\n" +
-              "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVD+aucpFLPK3HNnaZ/T/HeFGW84a\n" +
-              "gCBnW0Je0CzzDjhWNdNgI0R74uMhqVAiAFOH2NPjPXgQmaNSpdwRhlGXTw==\n" +
+  // Used starting 3-Oct-2021.
+  // Derived from a few signatures using https://github.com/trianglee/greenpass-derive-public-key.
+  "IL MOHEC": "-----BEGIN PUBLIC KEY-----" +
+              "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEcw+UZUnryP4rqSw+a8xQw4wLHZkc" +
+              "u4MDjJP7QeBUEpDt8xh4i4RSIBEJrBkAukSSobRDkwMb0dSCsWwK0rfMgQ==" +
               "-----END PUBLIC KEY-----",
              
   // ECDSA public key - used for "fast" medical certificates.
@@ -238,6 +239,15 @@ const RAMZOR_PUBLIC_KEYS_PEM = {
                    "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEc/E5MuUnnyuhwv5LTFa8clYA/B7y\n" +
                    "S5tkSWjD4E8o0yxGDT+7095mIVDo65z8yeqVRie5BGDARZYzSfJpRF+TYA==\n" +
                    "-----END PUBLIC KEY-----",
+
+  // Old, deprecated certificates -
+
+  // From https://github.com/MohGovIL/Ramzor/blob/main/Verification/ECDSA/RamzorQRPubKeyEC.der.
+  // Was used until 2-Oct-2021.
+  // "IL MOHEC": "-----BEGIN PUBLIC KEY-----\n" +
+  //             "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVD+aucpFLPK3HNnaZ/T/HeFGW84a\n" +
+  //             "gCBnW0Je0CzzDjhWNdNgI0R74uMhqVAiAFOH2NPjPXgQmaNSpdwRhlGXTw==\n" +
+  //             "-----END PUBLIC KEY-----",
 }
 
 function onLoad() {

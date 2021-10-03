@@ -22,7 +22,7 @@ QR Code scanning by https://github.com/zxing-js/library.
 
 Hard-coded Ministry of Health public keys (see **RAMZOR_PUBLIC_KEYS_PEM** in the code) are from -
 * RSA public key - https://github.com/MohGovIL/Ramzor/blob/main/Verification/RSA/RamzorQRPubKey.der.
-* ECDSA public key for most certificates - https://github.com/MohGovIL/Ramzor/blob/main/Verification/ECDSA/RamzorQRPubKeyEC.der.
+* ECDSA public key for most certificates - derived from a few signatures using https://github.com/trianglee/greenpass-derive-public-key.
 * ECDSA public key for "fast" medical certificates - derived from a few signatures using https://github.com/trianglee/greenpass-derive-public-key.
 
 A PEM public key can be extracted from a DER certificate using -
