@@ -54,3 +54,8 @@ Watch for changes are re-generate output -
 ```
 npm run watch
 ```
+
+# Deployment
+
+`dist` directory is automatically deployed to `dist` branch by a GitHub action,
+on every push to `master` branch.
