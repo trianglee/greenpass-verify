@@ -250,7 +250,7 @@ const RAMZOR_PUBLIC_KEYS_PEM = {
   //             "-----END PUBLIC KEY-----",
 }
 
-function onLoad() {
+export function onLoad() {
 
   onVerifySignature();
 
@@ -365,7 +365,7 @@ async function verifySignature(qrCodeText) {
   return result;
 }
 
-async function onVerifySignature() {
+export async function onVerifySignature() {
 
   const qrCodeText = document.getElementById("qrCodeText").value;
 
@@ -419,7 +419,7 @@ function displayCameraError(errorStr) {
   document.getElementById("cameraError").innerText = errorStr;
 }
 
-function onStartScanClick() {
+export function onStartScanClick() {
 
   displayCameraError("");
 
@@ -438,11 +438,11 @@ function onStartScanClick() {
   qrCodeReader.decodeFromInputVideoDeviceContinuously(cameraId, 'video', onDecode).catch(onStartScanError);
 }
 
-function onStopScanClick() {
+export function onStopScanClick() {
   qrCodeReader.reset();
 }
 
-function onSelectCameraButtonClick() {
+export function onSelectCameraButtonClick() {
   qrCodeReader.listVideoInputDevices().then(devices => {
     
     if (devices.length === 0) {

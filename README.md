@@ -34,3 +34,23 @@ openssl x509 -pubkey -in XXX.der -inform der -outform pem -noout
 # License
 
 [Apache License 2.0](LICENSE).
+
+# Development
+
+Initialize `node` -
+
+```
+npm install
+```
+
+Generate package for distribution using `webpack`, into output directory `dist` -
+
+```
+npm run build
+```
+
+Watch for changes are re-generate output -
+
+```
+npm run watch
+```

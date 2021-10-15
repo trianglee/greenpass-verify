@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8" />
                 
-        <script src="greenpass-verify.js"></script>
+        <script src="greenpass-verify-bundle.js"></script>
         <script src="3rd-party/zxing-library/index.min.js"></script>
 
         <title>Green Pass Verify</title>
@@ -28,7 +28,7 @@
             }
         </style>
     </head>
-    <body onload="onLoad()">
+    <body onload="GreenPassVerify.onLoad()">
 
         <h1>Green Pass Verify</h1>
 
@@ -44,9 +44,9 @@
         <hr>
         <video id="video"></video>
         <div id="cameraError"></div>
-        <button type="button" onclick="onStartScanClick()">Start Scanning</button>
-        <button type="button" onclick="onStopScanClick()">Stop Scanning</button>
-        <button type="button" onclick="onSelectCameraButtonClick()">Select Camera</button>
+        <button type="button" onclick="GreenPassVerify.onStartScanClick()">Start Scanning</button>
+        <button type="button" onclick="GreenPassVerify.onStopScanClick()">Stop Scanning</button>
+        <button type="button" onclick="GreenPassVerify.onSelectCameraButtonClick()">Select Camera</button>
         <div id="cameraSelectionDiv" style="display: none;">
             <select id="cameraSelect">
             </select>
@@ -54,7 +54,7 @@
         <hr>
         <p>
             QR Code Text:<br/>
-            <textarea id="qrCodeText" rows="7" cols="100" oninput="onVerifySignature()"
+            <textarea id="qrCodeText" rows="7" cols="100" oninput="GreenPassVerify.onVerifySignature()"
             placeholder="Scanned QR code goes here"></textarea><br/>
         </p>
         <p>

@@ -1,0 +1,25 @@
+{
+  "name": "greenpass-verify",
+  "version": "0.1.0",
+  "description": "Scan and verify Green Pass QR code, using the Israel Ministry of Health RSA or ECDSA public keys",
+  "private": "true",
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trianglee/greenpass-verify.git"
+  },
+  "author": "Nimrod Zimerman <zimerman@fastmail.fm>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/trianglee/greenpass-verify/issues"
+  },
+  "homepage": "https://github.com/trianglee/greenpass-verify#readme",
+  "devDependencies": {
+    "copy-webpack-plugin": "^9.0.1",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  }
+}
