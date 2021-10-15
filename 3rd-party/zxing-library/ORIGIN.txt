@@ -1,7 +1,0 @@
-https://github.com/zxing-js/library
-
-Combined JavaScript file downloaded from -
-https://unpkg.com/@zxing/library@0.18.4/umd/index.js
-
-Minified JavaScript file downloaded from -
-https://unpkg.com/@zxing/library@0.18.4/umd/index.min.js

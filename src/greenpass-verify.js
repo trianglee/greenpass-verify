@@ -16,6 +16,8 @@
 
 'use strict';
 
+const ZXing = require('@zxing/library');
+
 
 /*** SHA256 ***/
 

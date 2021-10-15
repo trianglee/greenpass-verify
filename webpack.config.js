@@ -25,7 +25,6 @@ module.exports = {
       patterns: [
         { from: "src/index.html",          to: "." },
         { from: "sounds",                  to: "sounds" },
-        { from: "3rd-party/zxing-library", to: "3rd-party/zxing-library" },
       ]
     })
   ]
