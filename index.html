@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+                
+        <script src="greenpass-verify-bundle.js"></script>
+
+        <title>Green Pass Verify</title>
+
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+
+            #video {
+                width: 400px;
+                margin: auto;
+                display: block;
+                border: 1px solid gray;
+            }
+
+            .validSignature {
+                color: green;
+            }
+            .invalidSignature {
+                color: red;
+            }
+        </style>
+    </head>
+    <body onload="GreenPassVerify.onLoad()">
+
+        <h1>Green Pass Verify</h1>
+
+        <p>
+            Scan and verify Green Pass QR code, using the Israel Ministry of Health RSA or ECDSA public keys.
+        </p>
+        <p>
+            No data is sent anywhere, signature verification is done entirely off-line 
+            in the browser.<br/>
+            <span style="color: red; font-weight: bold">In any case, don't put sensitive data into
+            this page without reading the code first!</span>
+        </p>
+        <hr>
+        <video id="video"></video>
+        <div id="cameraError"></div>
+        <button type="button" onclick="GreenPassVerify.onStartScanClick()">Start Scanning</button>
+        <button type="button" onclick="GreenPassVerify.onStopScanClick()">Stop Scanning</button>
+        <button type="button" onclick="GreenPassVerify.onSelectCameraButtonClick()">Select Camera</button>
+        <div id="cameraSelectionDiv" style="display: none;">
+            <select id="cameraSelect">
+            </select>
+        </div>
+        <hr>
+        <p>
+            QR Code Text:<br/>
+            <textarea id="qrCodeText" rows="7" cols="100" oninput="GreenPassVerify.onVerifySignature()"
+            placeholder="Scanned QR code goes here"></textarea><br/>
+        </p>
+        <p>
+            Signature Verification:<br/>
+            <input type="text" id="verifyResult" style="width: 50ch" readonly="readonly"><br/>
+        </p>
+        <p>
+            ID Number:<br/>
+            <input type="text" id="idNumber" style="width: 10ch" readonly="readonly"><br/>
+            Name:<br/>
+            <input type="text" id="name" style="width: 30ch" readonly="readonly"><br/>
+            Expirtaion:<br/>
+            <input type="text" id="expiration" style="width: 18ch" readonly="readonly"><br/>
+            Certificate Type:<br/>
+            <input type="text" id="certType" style="width: 3ch" readonly="readonly"><br/>
+        </p>        
+        <hr>
+        <p>
+            Source code available in <a href="https://github.com/trianglee/greenpass-verify">
+            https://github.com/trianglee/greenpass-verify</a>.
+        </p>
+        <p>
+            Based on the details and verification code provided by Ministry of Health
+            in <a href="https://github.com/MohGovIL/Ramzor">https://github.com/MohGovIL/Ramzor</a>,
+            and on the reverse-engeering work done by Yuval Adam in
+            <a href="https://github.com/yuvadm/greenpass">https://github.com/yuvadm/greenpass</a>.<br/>
+            QR Code scanning by <a href="https://github.com/zxing-js/library">
+            https://github.com/zxing-js/library</a>.
+        </p>
+        <p>
+            Copyright 2021 Nimrod Zimerman, <a href="LICENSE">Apache License 2.0</a>.
+        </p>
+    </body>
+</html>
